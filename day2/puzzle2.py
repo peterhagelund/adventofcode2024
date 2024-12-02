@@ -1,12 +1,11 @@
 def main():
     safe = 0
-    with open('puzzle_input.txt', 'rt') as f:
+    with open("puzzle_input.txt", "rt") as f:
         for line in f:
             levels = [int(l) for l in line.strip().split()]
             if could_be_safe(levels):
                 safe += 1
-
-    print(f'safe = {safe}')
+    print(f"safe = {safe}")
 
 
 def could_be_safe(levels) -> bool:
@@ -29,5 +28,5 @@ def is_safe(levels: list[int]) -> bool:
     return True
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
