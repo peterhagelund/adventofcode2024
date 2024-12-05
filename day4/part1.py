@@ -28,13 +28,13 @@ def main():
     with open('puzzle_input.txt', 'rt') as f:
         for line in f:
             puzzle.append(line.strip())
-    count = 0
+    answer = 0
     for y in range(len(puzzle)):
         for x in range(len(puzzle[0])):
             for pos in POS:
                 if is_xmas(puzzle, y, x, pos):
-                    count += 1
-    print(f'count = {count}')
+                    answer += 1
+    print(f'answer = {answer}')
 
 
 if __name__ == '__main__':
