@@ -55,10 +55,10 @@ def main():
             continue
 
         def rule_cmp(page1: int, page2: int) -> int:
-            if not can_come_after(page1, page2, rules):
-                return -1
-            elif not can_come_before(page1, page2, rules):
+            if can_come_after(page1, page2, rules):
                 return 1
+            elif can_come_before(page1, page2, rules):
+                return -1
             else:
                 return 0
 
