@@ -25,10 +25,10 @@ def is_in_right_order(update: list[int], rules: set[tuple[int, int]]) -> bool:
                 continue
             page2 = update[j]
             if i < j:
-                if not can_come_before(page1, page2, rules):
+                if can_come_after(page1, page2, rules):
                     return False
             else:
-                if not can_come_after(page1, page2, rules):
+                if can_come_before(page1, page2, rules):
                     return False
     return True
 
