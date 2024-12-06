@@ -6,7 +6,6 @@ DELTAS = [
     (0, -1),  # left
     (0, 1),  # right
 ]
-
 DIRECTIONS = [3, 2, 0, 1]
 
 

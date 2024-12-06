@@ -7,7 +7,6 @@ DELTAS = [
     (0, -1),  # left
     (0, 1),  # right
 ]
-
 DIRECTIONS = [3, 2, 0, 1]
 
 
@@ -16,7 +15,7 @@ def walk_guard_route(map: list[bytearray], y: int, x: int, visits=False) -> tupl
     if visits:
         visited = set()
     loop = False
-    turns: set[tuple[int, int, int]] | None = None
+    turns: list[tuple[int, int, int]] | None = None
     if not visits:
         turns = set()
     height = len(map)
