@@ -14,7 +14,7 @@ DIRECTIONS = [3, 2, 0, 1]
 def walk_guard_route(map: list[bytearray], y: int, x: int, visits=False) -> tuple[set[tuple[int, int]], bool]:
     visited: set[tuple[int, int]] | None = None
     if visits:
-        visited = {(x, y)}
+        visited = set()
     loop = False
     turns: set[tuple[int, int, int]] | None = None
     if not visits:
