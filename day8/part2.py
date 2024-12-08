@@ -1,6 +1,5 @@
 def find_antinodes(locations: list[tuple[int, int]], height: int, width: int) -> set[tuple[int, int]]:
-    antinodes: set[tuple[int, int]] = set()
-    antinodes.update(locations)
+    antinodes: set[tuple[int, int]] = set(locations)
     for i in range(len(locations)):
         for j in range(len(locations)):
             if j == i:
