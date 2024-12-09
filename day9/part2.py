@@ -9,7 +9,6 @@ def main():
         if is_file:
             entry = (file_id, True, length)
             file_id += 1
-
         else:
             entry = (-1, False, length)
         is_file = not is_file
