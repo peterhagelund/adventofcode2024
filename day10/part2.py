@@ -21,9 +21,9 @@ def get_path_count(map: list[list[int]], y: int, x: int) -> int:
     count = 0
     height = len(map)
     width = len(map[0])
-    queue = deque[tuple[int, int]]([(y, x)])
+    queue: deque[tuple[int, int]] = deque([(y, x)])
     while queue:
-        (y, x) = queue.pop()
+        y, x = queue.pop()
         elevation = map[y][x]
         for dy, dx in DELTAS:
             _y = y + dy
