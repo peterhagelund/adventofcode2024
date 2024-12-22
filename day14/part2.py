@@ -78,7 +78,6 @@ def main():
                         if l not in locations:
                             correct += 1
             if correct == 20:
-                print('found it!')
                 answer = seconds
                 print_tiles(locations)
                 break
