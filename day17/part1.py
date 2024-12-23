@@ -1,6 +1,3 @@
-from io import StringIO
-
-
 class Computer:
     def __init__(self, a: int, b: int, c: int, program: list[int]):
         super().__init__()
@@ -9,7 +6,7 @@ class Computer:
         self.c = c
         self.program = program
         self.ip = 0
-        self.output = StringIO()
+        self.output: list[int] = []
 
     def combo_operand(self, operand: int) -> int:
         assert operand != 7
@@ -45,9 +42,7 @@ class Computer:
                     self.b = self.b ^ self.c
                     self.ip += 2
                 case 5:  # out
-                    if self.output.tell() > 0:
-                        self.output.write(',')
-                    self.output.write(str(self.combo_operand(operand) % 8))
+                    self.output.append(self.combo_operand(operand) % 8)
                     self.ip += 2
                 case 6:  # bdv
                     self.b = int(self.a / 2 ** self.combo_operand(operand))
@@ -61,7 +56,7 @@ class Computer:
         print(f'b = {self.b}')
         print(f'c = {self.c}')
         print(f'ip = {self.ip}')
-        print(f'output = {self.output.getvalue()}')
+        print(f'output = {self.output}')
 
 
 def main():
