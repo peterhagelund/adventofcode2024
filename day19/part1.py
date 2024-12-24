@@ -30,7 +30,6 @@ def main():
 
     answer = 0
     for design in designs:
-        print(design)
         seen.clear()
         if can_make_design(design):
             answer += 1
