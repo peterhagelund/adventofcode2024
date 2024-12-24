@@ -25,7 +25,7 @@ class Computer:
             operand = self.program[self.ip + 1]
             match opcode:
                 case 0:  # adv
-                    self.a = int(self.a / 2 ** self.combo_operand(operand))
+                    self.a = self.a >> self.combo_operand(operand)
                     self.ip += 2
                 case 1:  # bxl
                     self.b = self.b ^ operand
@@ -45,18 +45,11 @@ class Computer:
                     self.output.append(self.combo_operand(operand) % 8)
                     self.ip += 2
                 case 6:  # bdv
-                    self.b = int(self.a / 2 ** self.combo_operand(operand))
+                    self.b = self.a >> self.combo_operand(operand)
                     self.ip += 2
                 case 7:  # cdv
-                    self.c = int(self.a / 2 ** self.combo_operand(operand))
+                    self.c = self.a >> self.combo_operand(operand)
                     self.ip += 2
-
-    def dump(self):
-        print(f'a = {self.a}')
-        print(f'b = {self.b}')
-        print(f'c = {self.c}')
-        print(f'ip = {self.ip}')
-        print(f'output = {self.output}')
 
 
 def main():
@@ -76,7 +69,7 @@ def main():
                 program.extend([int(i.strip()) for i in line[9:].split(',')])
     computer = Computer(a, b, c, program)
     computer.run()
-    computer.dump()
+    print(f'answer = {','.join(str(o) for o in computer.output)}')
 
 
 if __name__ == '__main__':
