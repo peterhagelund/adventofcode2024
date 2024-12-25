@@ -11,26 +11,26 @@ def main():
             else:
                 designs.append(line)
     towel_patterns.sort(key=lambda tp: len(tp), reverse=True)
-    seen: set[str] = set()
+    cache: dict[str, int] = {}
 
-    def can_make_design(design: str) -> bool:
+    def count_design_possibilities(design: str) -> int:
         ld = len(design)
         if ld == 0:
-            return True
-        if design in seen:
-            return False
+            return 1
+        if design in cache:
+            return cache[design]
+        count = 0
         for towel_pattern in towel_patterns:
             ltp = len(towel_pattern)
             if ltp <= ld and design[:ltp] == towel_pattern:
-                if can_make_design(design[ltp:]):
-                    return True
-        seen.add(design)
-        return False
+                count += count_design_possibilities(design[ltp:])
+        cache[design] = count
+        return count
 
     answer = 0
     for design in designs:
-        if can_make_design(design):
-            answer += 1
+        count_design_possibilities(design)
+        answer += cache[design]
     print(f'answer = {answer}')
 
 
