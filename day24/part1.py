@@ -13,8 +13,7 @@ def main():
             matches = re.findall(WIRE, line)
             if len(matches) > 0:
                 name = matches[0][0]
-                value = matches[0][1] == '1'
-                wires[name] = value
+                wires[name] = matches[0][1] == '1'
             else:
                 matches = re.findall(GATE, line)
                 if len(matches) > 0:
