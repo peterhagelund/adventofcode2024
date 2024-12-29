@@ -35,12 +35,11 @@ def main():
             gates.append((input1, kind, input2, output))
     z_wires = sorted([k for k in wires.keys() if k.startswith('z')])
     answer = 0
-    count = 0
+    bit = 1
     for name in z_wires:
-        value = wires[name]
-        if value is True:
-            answer |= 2**count
-        count += 1
+        if wires[name] is True:
+            answer |= bit
+        bit <<= 1
     print(f'answer = {answer}')
 
 
