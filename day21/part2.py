@@ -1,4 +1,5 @@
 from collections import deque
+from functools import cache
 from itertools import product
 from sys import maxsize
 
@@ -71,16 +72,30 @@ def main():
             door_codes.append(line.strip())
     numberic_sequences = compute_keypad_sequences(NUMERIC_KEYPAD)
     directional_sequences = compute_keypad_sequences(DIRECTIONAL_KEYPAD)
+    directional_lengths = {k: len(v[0]) for k, v in directional_sequences.items()}
+
+    @cache
+    def compute_length(key1: str, key2: str, depth: int) -> int:
+        if depth == 1:
+            return directional_lengths[(key1, key2)]
+        min_length = maxsize
+        for sequence in directional_sequences[(key1, key2)]:
+            length = 0
+            for _key1, _key2 in zip('A' + sequence, sequence):
+                length += compute_length(_key1, _key2, depth - 1)
+            min_length = min(min_length, length)
+        return min_length
+
     answer = 0
     for door_code in door_codes:
         next_sequences = find_possible_sequences(door_code, numberic_sequences)
-        for _ in range(2):
-            possible_next_sequences: list[list[str]] = []
-            for ns in next_sequences:
-                possible_next_sequences.extend(find_possible_sequences(ns, directional_sequences))
-            shortest = min(map(len, possible_next_sequences))
-            next_sequences = [pns for pns in possible_next_sequences if len(pns) == shortest]
-        answer += len(next_sequences[0]) * int(door_code[:-1])
+        min_length = maxsize
+        for sequence in next_sequences:
+            length = 0
+            for key1, key2 in zip('A' + sequence, sequence):
+                length += compute_length(key1, key2, 25)
+            min_length = min(min_length, length)
+        answer += min_length * int(door_code[:-1])
     print(f'answer = {answer}')
 
 
