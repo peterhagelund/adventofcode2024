@@ -1,57 +1,120 @@
-import re
-from collections import deque
+#
+# Based on Hyper Neutrino's walkthough of part 2: https://www.youtube.com/watch?v=SU6lp6wyd3I
+#
 
-WIRE = r'([a-z0-9]+): (\d)\s+'
+import re
+
 GATE = r'([a-z0-9]+) (AND|OR|XOR) ([a-z0-9]+) -> ([a-z0-9]+)'
 
 
+def make_wire(char: str, number: int) -> str:
+    return char + str(number).rjust(2, "0")
+
+
+def verify_z(gates: dict[str, tuple[str, str, str]], wire: str, number: int) -> bool:
+    # print("vz", wire, num)
+    if wire not in gates:
+        return False
+    x, kind, y = gates[wire]
+    if kind != "XOR":
+        return False
+    if number == 0:
+        return sorted([x, y]) == ["x00", "y00"]
+    return verify_intermediate_xor(gates, x, number) and verify_carry_bit(gates, y, number) or verify_intermediate_xor(gates, y, number) and verify_carry_bit(gates, x, number)
+
+
+def verify_intermediate_xor(gates: dict[str, tuple[str, str, str]], wire: str, number: int) -> bool:
+    # print("vx", wire, num)
+    if wire not in gates:
+        return False
+    x, kind, y = gates[wire]
+    if kind != "XOR":
+        return False
+    return sorted([x, y]) == [make_wire("x", number), make_wire("y", number)]
+
+
+def verify_carry_bit(gates: dict[str, tuple[str, str, str]], wire: str, number: int) -> bool:
+    # print("vc", wire, num)
+    if wire not in gates:
+        return False
+    x, kind, y = gates[wire]
+    if number == 1:
+        if kind != "AND":
+            return False
+        return sorted([x, y]) == ["x00", "y00"]
+    if kind != "OR":
+        return False
+    return verify_direct_carry(gates, x, number - 1) and verify_recarry(gates, y, number - 1) or verify_direct_carry(gates, y, number - 1) and verify_recarry(gates, x, number - 1)
+
+
+def verify_direct_carry(gates: dict[str, tuple[str, str, str]], wire: str, number: int) -> bool:
+    # print("vd", wire, num)
+    if wire not in gates:
+        return False
+    x, kind, y = gates[wire]
+    if kind != "AND":
+        return False
+    return sorted([x, y]) == [make_wire("x", number), make_wire("y", number)]
+
+
+def verify_recarry(gates: dict[str, tuple[str, str, str]], wire: str, number: int) -> bool:
+    # print("vr", wire, num)
+    if wire not in gates:
+        return False
+    x, kind, y = gates[wire]
+    if kind != "AND":
+        return False
+    return verify_intermediate_xor(gates, x, number) and verify_carry_bit(gates, y, number) or verify_intermediate_xor(gates, y, number) and verify_carry_bit(gates, x, number)
+
+
+def verify(gates: dict[str, tuple[str, str, str]], number: int) -> bool:
+    return verify_z(gates, make_wire("z", number), number)
+
+
+def progress(gates: dict[str, tuple[str, str, str]]):
+    i = 0
+    while True:
+        if not verify(gates, i):
+            break
+        i += 1
+    return i
+
+
 def main():
-    wires: dict[str, bool] = {}
-    gates: list[tuple[str, str, str, str]] = []
+    gates: dict[str, tuple[str, str, str]] = {}
     with open('puzzle_input.txt', 'rt') as f:
         for line in f:
-            matches = re.findall(WIRE, line)
+            if line.isspace():
+                break
+        for line in f:
+            matches = re.findall(GATE, line)
             if len(matches) > 0:
-                name = matches[0][0]
-                value = matches[0][1] == '1'
-                wires[name] = value
-            else:
-                matches = re.findall(GATE, line)
-                if len(matches) > 0:
-                    gates.append(matches[0])
-    queue: deque[tuple[str, str, str, str]] = deque(gates)
-    while queue:
-        input1, kind, input2, output = queue.popleft()
-        if input1 in wires and input2 in wires:
-            value1, value2 = wires[input1], wires[input2]
-            match kind:
-                case 'AND':
-                    result = value1 & value2
-                case 'OR':
-                    result = value1 | value2
-                case 'XOR':
-                    result = value1 ^ value2
-            wires[output] = result
-        else:
-            queue.append((input1, kind, input2, output))
-    answer = 0
-    numbers: list[int] = []
-    for c in 'xyz':
-        c_wires = sorted([k for k in wires.keys() if k.startswith(c)])
-        number = 0
-        bit = 1
-        for name in c_wires:
-            value = wires[name]
-            if value is True:
-                number |= bit
-            bit <<= 1
-        numbers.append(number)
+                x, kind, y, output = matches[0]
+                gates[output] = (x, kind, y)
 
-    print(f'x =  {numbers[0]:b}')
-    print(f'y =  {numbers[1]:b}')
-    print(f'z = {numbers[2]:b}')
-    print(f'x + y = {numbers[0] + numbers[1]}')
-    print(f'answer = {answer}')
+    def dump_wire(output: str, depth: int = 0) -> str:
+        if output[0] in 'xy':
+            return '  ' * depth + output
+        x, kind, y = gates[output]
+        return '  ' * depth + kind + ' (' + output + ')\n' + dump_wire(x, depth + 1) + '\n' + dump_wire(y, depth + 1)
+
+    swaps = []
+
+    for _ in range(4):
+        baseline = progress(gates)
+        for x in gates:
+            for y in gates:
+                if x == y:
+                    continue
+                gates[x], gates[y] = gates[y], gates[x]
+                if progress(gates) > baseline:
+                    break
+                gates[x], gates[y] = gates[y], gates[x]
+            else:
+                continue
+            break
+        swaps += [x, y]
+    print(f'answer = {",".join(sorted(swaps))}')
 
 
 if __name__ == '__main__':
