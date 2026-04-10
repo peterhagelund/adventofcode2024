@@ -9,7 +9,7 @@ def main():
     y, x = len(maze) - 2, 1
     assert maze[y][x] == 'S'
     queue: list[tuple[int, int, int, int, int]] = []
-    seen: set[tuple[int, int, int, int, int]] = set()
+    seen: set[tuple[int, int, int, int]] = set()
     queue.append((0, y, x, 0, 1))
     seen.add((y, x, 0, 1))
     answer = 0

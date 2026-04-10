@@ -15,7 +15,7 @@ def walk_guard_route(map: list[bytearray], y: int, x: int, visits=False) -> tupl
     if visits:
         visited = set()
     loop = False
-    turns: list[tuple[int, int, int]] | None = None
+    turns: set[tuple[int, int, int]] | None = None
     if not visits:
         turns = set()
     height = len(map)
@@ -28,14 +28,15 @@ def walk_guard_route(map: list[bytearray], y: int, x: int, visits=False) -> tupl
         if map[_y][_x] == OBSTRUCTION:
             if not visits:
                 turn = (y, x, direction)
-                if turn in turns:
+                if turns is not None and turn in turns:
                     loop = True
                     break
-                turns.add(turn)
+                if turns is not None:
+                    turns.add(turn)
             direction = DIRECTIONS[direction]
         else:
             y, x = _y, _x
-            if visits:
+            if visited is not None:
                 visited.add((y, x))
     return (visited, loop)
 

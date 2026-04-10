@@ -38,15 +38,15 @@ def main():
                 costs[(_y, _x, _dy, _dx)] = _cost
             backtrack[(_y, _x, _dy, _dx)].add((y, x, dy, dx))
             heapq.heappush(queue, (_cost, _y, _x, _dy, _dx))
-    queue: deque[tuple[int, int, int, int]] = deque(end_states)
+    queue2: deque[tuple[int, int, int, int]] = deque(end_states)
     seen: set[tuple[int, int, int, int]] = set(end_states)
-    while queue:
-        state = queue.popleft()
+    while queue2:
+        state = queue2.popleft()
         for last in backtrack.get(state, dummy):
             if last in seen:
                 continue
             seen.add(last)
-            queue.append(last)
+            queue2.append(last)
     answer = len({(y, x) for y, x, _, _ in seen})
     print(f'answer = {answer}')
 

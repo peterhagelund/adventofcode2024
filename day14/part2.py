@@ -64,8 +64,6 @@ def main():
             robot.move()
             locations.add((robot.y, robot.x))
         seconds += 1
-        if seconds < 6771:
-            continue
         for y, x in locations:
             correct = 0
             for pattern in PATTERNS:

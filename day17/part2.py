@@ -5,7 +5,7 @@ def main():
             if line.startswith('Program: '):
                 program.extend([int(i.strip()) for i in line[9:].split(',')])
 
-    def find_a(target: list[int], answer: int) -> int:
+    def find_a(target: list[int], answer: int) -> int | None:
         if len(target) == 0:
             return answer
         for i in range(8):
@@ -30,7 +30,7 @@ def main():
                 operand = program[ip + 1]
                 match opcode:
                     case 0:  # adv
-                        pass  # we're hsndling this through the search
+                        pass  # we're handling this through the search
                     case 1:  # bxl
                         b = b ^ operand
                     case 2:  # bst
@@ -45,11 +45,12 @@ def main():
                         b = a >> combo_operand(operand)
                     case 7:  # cdv
                         c = a >> combo_operand(operand)
-                if output == target[-1]:
-                    _a = find_a(target[:-1], a)
-                    if _a is None:
-                        continue
-                    return _a
+            if output == target[-1]:
+                _a = find_a(target[:-1], a)
+                if _a is None:
+                    continue
+                return _a
+        return None
 
     answer = find_a(program, 0)
     print(f'answer = {answer}')

@@ -21,6 +21,7 @@ def main():
                 pos = (y, x)
             map.append(row)
             y += 1
+    assert pos is not None
     (y, x) = pos
     height, width = len(map), len(map[0])
     visited: set[tuple[int, int]] = {(y, x)}

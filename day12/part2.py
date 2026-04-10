@@ -44,7 +44,7 @@ def calculate_price(plots: set[tuple[int, int]]) -> int:
     for orientation in range(4):
         _plots = sorted(plots, key=keys[orientation])
         runs: list[list[tuple[int, int]]] = []
-        run: list[tuple[int, int]] = None
+        run: list[tuple[int, int]] | None = None
         if orientation == 0 or orientation == 2:
             # Vertical:
             _y, _x = -1, -1
@@ -91,12 +91,11 @@ def calculate_price(plots: set[tuple[int, int]]) -> int:
 
 def main():
     garden: list[str] = []
-    with open('puzzle_input.txt', 'rt') as f:
+    with open("example_input.txt", "rt") as f:
         for line in f:
             garden.append(line.strip())
     seen: set[tuple[int, int]] = set()
     answer = 0
-    count = 0
     for y in range(len(garden)):
         for x in range(len(garden[y])):
             pos = (y, x)
@@ -105,8 +104,8 @@ def main():
             plots = find_region(garden, pos)
             seen.update(plots)
             answer += calculate_price(plots)
-    print(f'answer = {answer}')
+    print(f"answer = {answer}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
